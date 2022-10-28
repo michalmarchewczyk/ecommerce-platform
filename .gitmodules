@@ -1,0 +1,9 @@
+[submodule "admin-panel"]
+	path = admin-panel
+	url = https://github.com/michalmarchewczyk/ecommerce-platform-angular-admin-panel
+[submodule "api"]
+	path = api
+	url = https://github.com/michalmarchewczyk/ecommerce-platform-nestjs-api
+[submodule "storefront"]
+	path = storefront
+	url = https://github.com/michalmarchewczyk/ecommerce-platform-nextjs-storefront
