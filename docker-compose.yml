@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  api-server:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./api
+      target: prod
+    volumes:
+      - uploads:/usr/src/app/uploads
+    environment:
+      POSTGRES_HOST: api-database
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: ecommerce-platform
+      REDIS_HOST: api-redis
+      PORT: 80
+      SESSION_SECRET: "${SESSION_SECRET}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+    command: npm run start:prod
+    links:
+      - api-database
+      - api-redis
+  api-database:
+    image: postgres:14-alpine
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: ecommerce-platform
+  api-redis:
+    image: redis:7-alpine
+  admin-panel:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./admin-panel
+      args:
+        BASE_HREF: "/admin/"
+    links:
+      - api-server
+  storefront:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./storefront
+    environment:
+      PORT: 80
+    links:
+      - api-server
+  proxy:
+    build :
+      dockerfile: ./Dockerfile
+      context: .
+    links:
+      - api-server
+      - admin-panel
+      - storefront
+    ports:
+      - "80:80"
+
+volumes:
+  postgres:
+  uploads:
