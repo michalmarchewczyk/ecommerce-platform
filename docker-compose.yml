@@ -44,8 +44,13 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: ./storefront
+      args:
+        API_PATH: "http://api-server"
+        NEXT_PUBLIC_API_PATH: "/api"
     environment:
       PORT: 80
+      API_PATH: "http://api-server"
+      NEXT_PUBLIC_API_PATH: "/api"
     links:
       - api-server
   proxy:
